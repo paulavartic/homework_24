@@ -1,5 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
+
+from materials.models import Course, Lesson
 
 
 class User(AbstractUser):
@@ -36,3 +39,50 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.id
+
+
+class Payment(models.Model):
+    method_options = [
+        ('CASH', 'Cash'),
+        ('CARD', 'Card'),
+    ]
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='User'
+    )
+    payment_date = models.DateTimeField(
+        verbose_name='Payment date',
+        default=timezone.now
+    )
+    paid_course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        verbose_name='Paid course',
+        null=True,
+        blank=True,
+    )
+    paid_lesson = models.ForeignKey(
+        Lesson,
+        on_delete=models.CASCADE,
+        verbose_name='Paid lesson',
+        null=True,
+        blank=True,
+    )
+    amount = models.PositiveIntegerField(
+        verbose_name='Amount due'
+    )
+    payment_method = models.CharField(
+        verbose_name='Payment method',
+        choices=method_options,
+    )
+
+    class Meta:
+        verbose_name = 'Payment'
+        verbose_name_plural = 'Payments'
+
+    def __str__(self):
+        return f'{self.user}: {self.paid_course if self.paid_course else self.paid_lesson}'
+
+

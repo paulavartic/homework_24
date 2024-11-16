@@ -41,7 +41,9 @@ class Lesson(models.Model):
         verbose_name="Video URL", help_text="Add the link to the video"
     )
     course = models.ForeignKey(
-        "Course", on_delete=models.CASCADE, verbose_name="Course"
+        "Course",
+        on_delete=models.CASCADE,
+        verbose_name="Course"
     )
 
     class Meta:
