@@ -25,3 +25,8 @@ class PaymentCreateAPIView(CreateAPIView):
 class UserCreateAPIView(CreateAPIView):
     serializer_class = UserSerializer
     queryset = User.objects.all()
+
+    def perform_create(self, serializer):
+        user = serializer.save(is_active=True)
+        user.password(user.password)
+        user.save()
